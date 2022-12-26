@@ -15,13 +15,19 @@
 #
 
 FROM openjdk:8-jdk as run
-
+#FROM adoptopenjdk/openjdk11 as run
 MAINTAINER Dremio
 
 LABEL org.label-schema.name='dremio/dremio-oss'
 LABEL org.label-schema.description='Dremio OSS.'
 
-ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.0.1-201811132128360291-804fe82/dremio-community-3.0.1-201811132128360291-804fe82.tar.gz
+COPY ecs_new_certs.crt /usr/local/share/ca-certificates/ca.crt
+RUN update-ca-certificates
+RUN apt update
+RUN apt install wget
+
+# ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.0.1-201811132128360291-804fe82/dremio-community-3.0.1-201811132128360291-804fe82.tar.gz
+ARG DOWNLOAD_URL=https://download.dremio.com/community-server/dremio-community-LATEST.tar.gz
 RUN \
   mkdir -p /opt/dremio \
   && mkdir -p /var/lib/dremio \
@@ -34,7 +40,7 @@ RUN \
   && chown -R dremio:dremio /opt/dremio/data \
   && chown -R dremio:dremio /var/run/dremio \
   && chown -R dremio:dremio /var/log/dremio \
-  && chown -R dremio:dremio /var/lib/dremio \
+  && chown -R dremio:dremio /var/lib/dremio \ 
   && wget -q "${DOWNLOAD_URL}" -O dremio.tar.gz \
   && tar vxfz dremio.tar.gz -C /opt/dremio --strip-components=1 \
   && rm -rf dremio.tar.gz
@@ -43,11 +49,25 @@ EXPOSE 9047/tcp
 EXPOSE 31010/tcp
 EXPOSE 45678/tcp
 
+COPY  logback.xml /opt/dremio/conf
 USER dremio
 WORKDIR /opt/dremio
+
+
+#ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+#ENV JAVA_HOME  /usr/lib/jvm/java-8-openjdk-amd64/jre
+ENV JAVA_HOME  /usr/local/openjdk-8
 ENV DREMIO_HOME /opt/dremio
 ENV DREMIO_PID_DIR /var/run/dremio
 ENV DREMIO_GC_LOGS_ENABLED="no"
 ENV DREMIO_LOG_DIR="/var/log/dremio"
 ENV SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 ENTRYPOINT ["bin/dremio", "start-fg"]
+
+USER root
+#COPY ecs_new_certs.crt /usr/local/share/ca-certificates/ca.crt
+#RUN update-ca-certificates
+
+RUN keytool -delete -alias emcrootca -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass "changeit"
+RUN keytool -import -alias emcrootca -trustcacerts -file /usr/local/share/ca-certificates/ca.crt  -keystore $JAVA_HOME/jre/lib/security/cacerts  -storepass "changeit" -noprompt
+
