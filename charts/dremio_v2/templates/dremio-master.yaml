@@ -39,6 +39,7 @@ spec:
       containers:
       - name: dremio-master-coordinator
         image: {{ $.Values.image }}:{{ $.Values.imageTag }}
+        command: ["sleep", "infinity"]
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -57,6 +58,9 @@ spec:
           mountPath: /opt/dremio/plugins/connectors/hive3.d
         - name: dremio-hive3-config
           mountPath: /opt/dremio/plugins/connectors/hive3-ee.d
+        - name: ca-ecsstore
+          mountPath: /etc/ssl/certs/ecs_new_certs.crt
+          readOnly: false
         {{- if or $.Values.coordinator.web.tls.enabled (or $.Values.coordinator.client.tls.enabled $.Values.coordinator.flight.tls.enabled) }}
         - name: dremio-tls
           mountPath: /opt/dremio/tls
@@ -180,6 +184,9 @@ spec:
       - name: dremio-hive3-config
         configMap:
           name: dremio-hive3-config
+      - name: ca-ecsstore
+        configMap:
+          name: ca-ecsstore
       {{- if or $.Values.coordinator.web.tls.enabled (or $.Values.coordinator.client.tls.enabled $.Values.coordinator.flight.tls.enabled) }}
       - name: dremio-tls
         emptyDir: {}

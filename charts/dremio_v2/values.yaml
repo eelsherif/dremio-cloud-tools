@@ -7,7 +7,10 @@
 # Using latest will cause Dremio to potentially upgrade versions
 # automatically during redeployments and may negatively impact
 # the cluster.
-image: dremio/dremio-oss
+#image: dremio/dremio-oss
+image: eelsherif/dremiolocal
+#image: localhost:5000/dremiolocal
+#image: dremiolocal/dremio
 imageTag: latest
 
 # Annotations, labels, node selectors, and tolerations
@@ -32,8 +35,8 @@ coordinator:
   # CPU & Memory
   # Memory allocated to each coordinator, expressed in MB.
   # CPU allocated to each coordinator, expressed in CPU cores.
-  cpu: 15
-  memory: 122800
+  cpu: 2
+  memory: 4096
 
   # This count is used for slave coordinators only.
   # The total number of coordinators will always be count + 1.
@@ -122,14 +125,14 @@ executor:
   # CPU & Memory
   # Memory allocated to each executor, expressed in MB.
   # CPU allocated to each executor, expressed in CPU cores.
-  cpu: 15
-  memory: 122800
+  cpu: 1
+  memory: 4096
 
   # Engines
   # Engine names be 47 characters or less and be lowercase alphanumber characters or '-'.
   # Note: The number of executor pods will be the length of the array below * count.
   engines: ["default"]
-  count: 3
+  count: 1
 
   # Executor volume size.
   volumeSize: 128Gi
@@ -193,7 +196,7 @@ executor:
   #
   # The settings above are overridable on a per-engine basis. These
   # values here will take precedence and *override* the configured values
-  # on a per-engine basis. Engine overrides are matched with the name in the above
+  # on a per-engine basis. Engine ovrrides are matched with the name in the above
   # list of engines.
   #
   # Special per-engine parameters:
@@ -246,17 +249,21 @@ executor:
   #         storageClass: ""
 
 # Zookeeper
-zookeeper:
+## zookeeper:
   # The Zookeeper image used in the cluster.
-  image: k8s.gcr.io/kubernetes-zookeeper
-  imageTag: 1.0-3.4.10
+#  image: k8s.gcr.io/kubernetes-zookeeper
+#  imageTag: 1.0-3.4.10
+
+zookeeper:
+  image: zookeeper
+  imageTag: 3.8.0
 
   # CPU & Memory
   # Memory allocated to each zookeeper, expressed in MB.
   # CPU allocated to each zookeeper, expressed in CPU cores.
   cpu: 0.5
   memory: 1024
-  count: 3
+  count: 1
 
   volumeSize: 10Gi
 
@@ -286,7 +293,7 @@ distStorage:
   # azure: ADLS Gen 1, additional parameters required, see "azure" section.
   # azureStorage: Azure Storage Gen2, additional paramters required, see "azureStorage" section.
   # gcp: Google Cloud Storage, additional parameters required, see "gcp" section.
-  type: "local"
+  type: "aws"
 
   # Google Cloud Storage
   #
@@ -330,37 +337,30 @@ distStorage:
   #
   # bucketName: The name of the S3 bucket for distributed storage.
   # path: The path, relative to the bucket, to create Dremio's directories.
-  # authentication: Valid types are: accessKeySecret, instanceMetadata, or awsProfile.
+  # authentication: Valid types are: accessKeySecret or instanceMetadata.
   #   - Note: Instance metadata is only supported in AWS EKS and requires that the
   #       EKS worker node IAM role is configured with sufficient access rights. At this time,
   #       Dremio does not support using an K8s service account based IAM role.
   # credentials: If using accessKeySecret authentication, uncomment the credentials section below.
   aws:
-    bucketName: "AWS Bucket Name"
-    path: "/"
-    authentication: "metadata"
+    bucketName: "dremio"
+    path: "/data"
+    # authentication: "metadata"
     # If using accessKeySecret for authentication against S3, uncomment the lines below and use the values
     # to configure the appropriate credentials.
     #
-    #credentials:
-    #  accessKey: "AWS Access Key"
-    #  secret: "AWS Secret"
-    #
-    # If using awsProfile for authentication against S3, uncomment the lines below and use the values
-    # to choose the appropriate profile.
-    #
-    #credentials:
-    #  awsProfileName: "default"
-    #
+    credentials:
+      accessKey: "DJcfkwa9pQPtlOvKOzOqOd5J6bTbKF3ieqyqZ7D0"
+      secret: "at1-1004811-11ae770e-82ef-432c-b3b5-7c2e6d3750a4"
+
     # Extra Properties
     # Use the extra properties block to provide additional parameters to configure the distributed
     # storage in the generated core-site.xml file.
     #
-    #extraProperties: |
-    #  <property>
-    #    <name></name>
-    #    <value></value>
-    #  </property>
+    extraProperties: |
+      <property>
+        <value>https://cloudstorage-colo.dell.com</value>
+      </property>
 
   # Azure ADLS Gen 1
   # For more details of Azure ADLS Gen 1 storage configuration, see
