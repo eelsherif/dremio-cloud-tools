@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
 
-    Copyright (C) 2017-2018 Dremio Corporation
+    Copyright (C) 2017-2019 Dremio Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 
 -->
 <configuration>
+  <turboFilter class="com.dremio.common.logging.obfuscation.BlockLogLevelTurboFilter">
+    <defaultLogLevelThreshold>INFO</defaultLogLevelThreshold>
+    <packageLogLevel>com.dremio,DEBUG</packageLogLevel>
+  </turboFilter>
   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -88,19 +92,37 @@
           </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
 
-        <encoder>
-          <pattern>%msg%n</pattern>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+          <providers>
+            <arguments />
+          </providers>
         </encoder>
       </appender>
+
+      <appender name="tracker" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dremio.log.path}/tracker.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+          <fileNamePattern>${dremio.log.path}/archive/tracker.%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
+          <maxHistory>30</maxHistory>
+          <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+              <maxFileSize>100MB</maxFileSize>
+          </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+          <pattern>%date{ISO8601} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+      </appender>
+
     </then>
   </if>
 
   <logger name="com.dremio">
-    <level value="${dremio.log.level:-all}"/>
+    <level value="${dremio.log.level:-error}"/>
   </logger>
 
   <logger name="query.logger">
-    <level value="${dremio.log.level:-all}"/>
+    <level value="${dremio.log.level:-error}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="query"/>
@@ -108,8 +130,18 @@
     </if>
   </logger>
 
+  <logger name="tracker.logger">
+      <level value="{dremio.log.level: -error}"/>
+      <if condition='isDefined("dremio.log.path")'>
+          <then>
+              <additivity value ="false"/>
+              <appender-ref ref="tracker"/>
+          </then>
+      </if>
+  </logger>
+
   <logger name="com.dremio.exec.catalog.SourceMetadataManager" additivity="false">
-    <level value="${dremio.log.level:-all}"/>
+    <level value="${dremio.log.level:-error}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="metadata_refresh"/>
@@ -118,7 +150,7 @@
   </logger>
 
   <logger name="com.dremio.exec.store.hive.HiveClient" additivity="false">
-    <level value="${dremio.log.level:-error}"/>
+    <level value="${dremio.log.level:-errorl}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="metadata_refresh"/>
@@ -146,6 +178,10 @@
         </appender>
       </then>
     </if>
+  </logger>
+
+  <logger name="org.apache.hadoop.hdfs.DFSClient">
+    <level value="warn"/>
   </logger>
 
   <root>

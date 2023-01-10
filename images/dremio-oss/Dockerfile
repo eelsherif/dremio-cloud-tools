@@ -21,10 +21,11 @@ MAINTAINER Dremio
 LABEL org.label-schema.name='dremio/dremio-oss'
 LABEL org.label-schema.description='Dremio OSS.'
 
-COPY ecs_new_certs.crt /usr/local/share/ca-certificates/ca.crt
+COPY ecs_new_certs.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 RUN apt update
 RUN apt install wget
+
 
 # ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.0.1-201811132128360291-804fe82/dremio-community-3.0.1-201811132128360291-804fe82.tar.gz
 ARG DOWNLOAD_URL=https://download.dremio.com/community-server/dremio-community-LATEST.tar.gz
@@ -49,7 +50,7 @@ EXPOSE 9047/tcp
 EXPOSE 31010/tcp
 EXPOSE 45678/tcp
 
-COPY  logback.xml /opt/dremio/conf
+#COPY  logback.xml /opt/dremio/conf
 USER dremio
 WORKDIR /opt/dremio
 
@@ -68,6 +69,6 @@ USER root
 #COPY ecs_new_certs.crt /usr/local/share/ca-certificates/ca.crt
 #RUN update-ca-certificates
 
-RUN keytool -delete -alias emcrootca -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass "changeit"
-RUN keytool -import -alias emcrootca -trustcacerts -file /usr/local/share/ca-certificates/ca.crt  -keystore $JAVA_HOME/jre/lib/security/cacerts  -storepass "changeit" -noprompt
+#RUN keytool -delete -alias emcrootca -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass "changeit"
+RUN keytool -import -alias emcrootca -trustcacerts -file /usr/local/share/ca-certificates/ecs_new_certs.crt  -keystore $JAVA_HOME/jre/lib/security/cacerts  -storepass "changeit" -noprompt
 
