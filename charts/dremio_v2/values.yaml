@@ -8,9 +8,10 @@
 # automatically during redeployments and may negatively impact
 # the cluster.
 #image: dremio/dremio-oss
-image: eelsherif/dremiolocal
+#image: eelsherif/dremiolocal
+image: harbor.dell.com/ai-data/dremio-ai
 #image: localhost:5000/dremiolocal
-#image: dremiolocal/dremio
+#image: eelsherif/dremio-oss
 imageTag: latest
 
 # Annotations, labels, node selectors, and tolerations
@@ -255,7 +256,7 @@ executor:
 #  imageTag: 1.0-3.4.10
 
 zookeeper:
-  image: zookeeper
+  image: harbor.dell.com/ai-data/zookeeper
   imageTag: 3.8.0
 
   # CPU & Memory
@@ -350,8 +351,8 @@ distStorage:
     # to configure the appropriate credentials.
     #
     credentials:
-      accessKey: "DJcfkwa9pQPtlOvKOzOqOd5J6bTbKF3ieqyqZ7D0"
-      secret: "at1-1004811-11ae770e-82ef-432c-b3b5-7c2e6d3750a4"
+      accessKey: "at1-1004811-11ae770e-82ef-432c-b3b5-7c2e6d3750a4"
+      secret: "DJcfkwa9pQPtlOvKOzOqOd5J6bTbKF3ieqyqZ7D0"
 
     # Extra Properties
     # Use the extra properties block to provide additional parameters to configure the distributed
@@ -359,7 +360,33 @@ distStorage:
     #
     extraProperties: |
       <property>
+        <name>fs.s3a.impl</name>
+        <value>com.dremio.plugins.s3.store.S3FileSystem</value>
+      </property>
+ 
+      <property>
+        <name>fs.s3a.endpoint</name>
         <value>https://cloudstorage-colo.dell.com</value>
+      </property>
+
+      <property>
+        <name>fs.s3a.aws.credentials.provider</name>
+        <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider</value>
+      </property>
+
+      <property>
+        <name>fs.s3a.path.style.access</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>dremio.s3.compat</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>fs.s3a.connection.ssl.enabled</name>
+        <value>SSL_ENABLED</value>
       </property>
 
   # Azure ADLS Gen 1

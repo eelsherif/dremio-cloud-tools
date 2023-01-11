@@ -96,11 +96,11 @@
   </if>
 
   <logger name="com.dremio">
-    <level value="${dremio.log.level:-info}"/>
+    <level value="${dremio.log.level:-all}"/>
   </logger>
 
   <logger name="query.logger">
-    <level value="${dremio.log.level:-info}"/>
+    <level value="${dremio.log.level:-all}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="query"/>
@@ -109,7 +109,7 @@
   </logger>
 
   <logger name="com.dremio.exec.catalog.SourceMetadataManager" additivity="false">
-    <level value="${dremio.log.level:-info}"/>
+    <level value="${dremio.log.level:-all}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="metadata_refresh"/>
@@ -118,7 +118,7 @@
   </logger>
 
   <logger name="com.dremio.exec.store.hive.HiveClient" additivity="false">
-    <level value="${dremio.log.level:-info}"/>
+    <level value="${dremio.log.level:-error}"/>
     <if condition='isDefined("dremio.log.path")'>
       <then>
         <appender-ref ref="metadata_refresh"/>
