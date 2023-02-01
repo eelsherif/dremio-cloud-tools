@@ -59,7 +59,7 @@ spec:
         - name: dremio-hive3-config
           mountPath: /opt/dremio/plugins/connectors/hive3-ee.d
         - name: ca-ecsstore
-          mountPath: /etc/ssl/certs
+          mountPath: /etc/ssl/certs/ecs_ca.pem
           readOnly: true
         {{- if or $.Values.coordinator.web.tls.enabled (or $.Values.coordinator.client.tls.enabled $.Values.coordinator.flight.tls.enabled) }}
         - name: dremio-tls

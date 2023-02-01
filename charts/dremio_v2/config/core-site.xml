@@ -23,7 +23,7 @@
     </property>
     <property>
         <name>fs.s3a.endpoint</name>
-        <value>https://cloudstorage-colo.dell.com</value>
+        <value>cloudstorage-colo.dell.com</value>
     </property>
     <property>
         <name>fs.s3a.path.style.access</name>
@@ -39,7 +39,7 @@
     </property>
     <property>
         <name>fs.s3a.connection.ssl.enabled</name>
-        <value>SSL_ENABLED</value>
+        <value>true</value>
     </property>
    <property>
         <name>hadoop.proxyuser.dremio.hosts</name>
@@ -58,9 +58,11 @@
         <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider</value>
     </property>
 
-<property>     <name>fs.dremioS3.impl</name>     <description>The FileSystem implementation. Must be set to com.dremio.plugins.s3.store.S3FileSystem</description>     <value>com.dremio.plugins.s3.store.S3FileSystem</value> </property> 
-
-  <property>
+    <property>     
+	<name>fs.dremioS3.impl</name>     
+	<description>The FileSystem implementation. Must be set to com.dremio.plugins.s3.store.S3FileSystem</description>     
+	<value>com.dremio.plugins.s3.store.S3FileSystem</value> </property> 
+    <property>
     <name>dremio.s3.compat</name>
     <description>Value has to be set to true.</description>
     <value>true</value>

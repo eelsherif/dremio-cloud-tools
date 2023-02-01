@@ -22,6 +22,7 @@ LABEL org.label-schema.name='dremio/dremio-oss'
 LABEL org.label-schema.description='Dremio OSS.'
 
 COPY ecs_new_certs.crt /usr/local/share/ca-certificates/
+
 RUN update-ca-certificates
 RUN apt update
 RUN apt install wget
@@ -34,17 +35,17 @@ RUN \
   && mkdir -p /var/lib/dremio \
   && mkdir -p /var/run/dremio \
   && mkdir -p /var/log/dremio \
-  && mkdir -p /opt/dremio/data \
+  && mkdir -p /opt/dremio/data2 \
   \
   && groupadd --system dremio \
   && useradd --base-dir /var/lib/dremio --system --gid dremio dremio \
-  && chown -R dremio:dremio /opt/dremio/data \
+  && chown -R dremio:dremio /opt/dremio/data2 \
   && chown -R dremio:dremio /var/run/dremio \
   && chown -R dremio:dremio /var/log/dremio \
   && chown -R dremio:dremio /var/lib/dremio \ 
   && wget -q "${DOWNLOAD_URL}" -O dremio.tar.gz \
   && tar vxfz dremio.tar.gz -C /opt/dremio --strip-components=1 \
-  && rm -rf dremio.tar.gz
+  && rm -rf dremio.tar.gz 
 
 EXPOSE 9047/tcp
 EXPOSE 31010/tcp
@@ -54,6 +55,11 @@ EXPOSE 45678/tcp
 USER dremio
 WORKDIR /opt/dremio
 
+#COPY hive-site.xml /opt/dremio/conf
+#COPY core-site.xml /opt/dremio/conf
+#COPY hive-site.xml /opt/dremio/plugins/connectors/hive3.d/conf/hive-site.xml
+#COPY core-site.xml /opt/dremio/plugins/connectors/hive3.d/conf/core-site.xml
+#COPY dremio.conf /opt/dremio/conf
 
 #ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
 #ENV JAVA_HOME  /usr/lib/jvm/java-8-openjdk-amd64/jre
