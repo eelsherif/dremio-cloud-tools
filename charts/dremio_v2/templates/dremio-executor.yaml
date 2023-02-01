@@ -40,7 +40,7 @@ spec:
             memory: {{ template "dremio.executor.memory" (list $ $engineName) }}
         volumeMounts:
         - name: {{ template "dremio.executor.volumeClaimName" (list $ $engineName) }}
-          mountPath: /opt/dremio/data
+          mountPath: /opt/dremio/data2
         - name: dremio-config
           mountPath: /opt/dremio/conf
         - name: dremio-hive2-config
@@ -88,9 +88,9 @@ spec:
           runAsUser: 0
         volumeMounts:
         - name: {{ template "dremio.executor.volumeClaimName" (list $ $engineName) }}
-          mountPath: /opt/dremio/data
+          mountPath: /opt/dremio/data2
         command: ["chown"]
-        args: ["dremio:dremio", "/opt/dremio/data"]
+        args: ["dremio:dremio", "/opt/dremio/data2"]
       {{- include "dremio.executor.cloudCache.initContainers" (list $ $engineName) | nindent 6 }}
       - name: wait-for-zookeeper
         image: harbor.dell.com/ai-data/busybox

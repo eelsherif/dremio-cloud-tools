@@ -46,7 +46,7 @@ coordinator:
   # Coordinator data volume size (applies to the master coordinator only).
   # In most managed Kubernetes environments (AKS, GKE, etc.), the size of the disk has a direct impact on
   # the provisioned and maximum performance of the disk.
-  volumeSize: 128Gi
+  volumeSize: 10Gi
 
   # Kubernetes Service Account
   # Uncomment below to use a custom Kubernetes service account for the coordinator.
@@ -136,7 +136,7 @@ executor:
   count: 1
 
   # Executor volume size.
-  volumeSize: 128Gi
+  volumeSize: 10Gi
 
   # Kubernetes Service Account
   # Uncomment below to use a custom Kubernetes service account for executors.
@@ -366,7 +366,7 @@ distStorage:
  
       <property>
         <name>fs.s3a.endpoint</name>
-        <value>https://cloudstorage-colo.dell.com</value>
+        <value>cloudstorage-colo.dell.com</value>
       </property>
 
       <property>
@@ -386,7 +386,7 @@ distStorage:
 
       <property>
         <name>fs.s3a.connection.ssl.enabled</name>
-        <value>SSL_ENABLED</value>
+        <value>true</value>
       </property>
 
   # Azure ADLS Gen 1
