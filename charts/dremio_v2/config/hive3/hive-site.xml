@@ -23,6 +23,11 @@ likely need to add a number of new values. -->
     <value>true</value>
   </property>
 
+  <property>
+    <name>metastore.thrift.uris</name>
+    <value>thrift://hms.ai-data.us.dell.com:9090</value>
+    <description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+  </property>
 
   <property>
     <name>metastore.task.threads.always</name>

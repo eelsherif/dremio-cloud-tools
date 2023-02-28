@@ -7,11 +7,7 @@
 # Using latest will cause Dremio to potentially upgrade versions
 # automatically during redeployments and may negatively impact
 # the cluster.
-#image: dremio/dremio-oss
-#image: eelsherif/dremiolocal
-image: harbor.dell.com/ai-data/dremio-ai
-#image: localhost:5000/dremiolocal
-#image: eelsherif/dremio-oss
+image: harbor.dell.com/ai-data/dremio
 imageTag: latest
 
 # Annotations, labels, node selectors, and tolerations
