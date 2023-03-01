@@ -347,8 +347,8 @@ distStorage:
     # to configure the appropriate credentials.
     #
     credentials:
-      accessKey: "at1-1004811-11ae770e-82ef-432c-b3b5-7c2e6d3750a4"
-      secret: "DJcfkwa9pQPtlOvKOzOqOd5J6bTbKF3ieqyqZ7D0"
+      accessKey: "xxxxxxxxxxxxxxxxxxxxx"
+      secret: "xxxxxxxxxxxxxx"
 
     # Extra Properties
     # Use the extra properties block to provide additional parameters to configure the distributed
